@@ -1,14 +1,7 @@
-// const express = require('express')
 const mongoose = require('mongoose')
-// var app = express()
-
-// //Route
-// app.get('/',function(req,res){
-//   res.send('hello world')
-// })
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost/ignou_assignment', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/ignou_assignment', {useNewUrlParser: true});
 mongoose.connection.once('open',function(){
   console.log('Database connected Successfully');
 }).on('error',function(err){

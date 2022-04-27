@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+
 class GuestForm extends Component {
     constructor (props) {
         super(props);
@@ -30,12 +31,22 @@ class GuestForm extends Component {
         const name = e.target.name;
         const value = e.target.value;
         console.log(value);
-        this.setState({[name]: value});
+        // this.setState({[name]: value});
         // this.setState({[name]: value}, () => { this.validateField(name, value) });
     }
 
     getReservation=()=>{
         alert('hey user');
+
+        // fetch(
+        //     "https://localhost:8080/users")
+        //         .then((res) => res.json())
+        //         .then((json) => {
+        //             this.setState({
+        //                 items: json,
+        //                 DataisLoaded: true
+        //             });
+        //         })
     }
 
     validateForm() {
@@ -118,6 +129,7 @@ class GuestForm extends Component {
                                 <input type="text" className="form-control" 
                                 id="firstname" placeholder="first name"
                                 name='firstname'
+                                defaultValue={'helo'}
                                 value={this.state.firstname}
                                 onChange={()=>this.handleUserInput}
                                 srequired/>

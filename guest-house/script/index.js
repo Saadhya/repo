@@ -1,9 +1,12 @@
 const express = require('express');
-const path = require('path');
+// const path = require('path');
 const connection = require('./connection');
 const app = express(),
 bodyParser = require("body-parser");
 const PORT = process.env.PORT || 8080;
+
+const router = require('./routes/user')
+const empRouter = require('./routes/emp')
 
 // place holder for the data
 app.use(bodyParser.json());
@@ -18,3 +21,7 @@ app.listen(PORT, () => {
 app.get('/',function(req,res){
   res.send('hello world')
 })
+
+app.use('/user',router)
+app.use('/emp',empRouter)
+
