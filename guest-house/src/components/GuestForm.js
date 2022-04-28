@@ -18,6 +18,8 @@ class GuestForm extends Component {
           paymentMethod:'',
 
           error:'',
+          isError: false,
+          message:'',
           emailValid:false,
           textValid:false,
           formValid:false,
@@ -32,26 +34,37 @@ class GuestForm extends Component {
         const value = e.target.value;
         console.log(value);
         // this.setState({[name]: value});
-        // this.setState({[name]: value}, () => { this.validateField(name, value) });
+        this.setState({[name]: value}, () => { this.validateField(name, value) });
     }
 
-    getReservation=()=>{
-        alert('hey user');
+    getReservation=(e)=>{
+        e.preventDefault();
+        // alert('hey user');
 
-        // fetch(
-        //     "https://localhost:8080/users")
-        //         .then((res) => res.json())
-        //         .then((json) => {
-        //             this.setState({
-        //                 items: json,
-        //                 DataisLoaded: true
-        //             });
-        //         })
+        fetch(
+            "http://localhost:8080/user/create")
+                .then((res) => res.json())
+                .then((json) => {
+                    console.log(json);
+                    this.setState({
+                        message: "Data saved successfully!"
+                    });
+                },
+                (error)=>{
+                    console.log(error)
+                    this.setState({
+                        isError: true,
+                        error: "Data did not save :("
+                    });
+                })
+                // .catch(err)={
+                //     // console.log(err)
+                // }
     }
 
-    validateForm() {
-        this.setState({formValid: this.state.emailValid && this.state.passwordValid});
-    }
+    // validateForm() {
+    //     this.setState({formValid: this.state.emailValid && this.state.passwordValid});
+    // }
     validateField=(fieldName, value)=>{
         let fieldValidationErrors = this.state.formErrors;
         let error = this.state.error;
@@ -63,7 +76,7 @@ class GuestForm extends Component {
         switch(fieldName) {
             case 'email':
                 emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-                error = 'Email is invalid!';
+                error = emailValid? '':'Email is invalid!' ;
                 // fieldValidationErrors.email = emailValid ? '' : ' is invalid';
                 break;
             case 'firstname':
@@ -99,20 +112,25 @@ class GuestForm extends Component {
         //     passwordValid = value.length >= 6;
         //     fieldValidationErrors.password = passwordValid ? '': ' is too short';
         //     break;
-      
         
         default:
                 break;
         }
-        this.setState({formErrors: fieldValidationErrors,
-                        emailValid: emailValid,
+        // this.setState({
+        //     isError: true,
+        //     error: 'error'
+        // });
+        // formErrors: fieldValidationErrors,
+            // emailValid: emailValid,
                         // passwordValid: passwordValid
-                      }, this.validateForm);
+                    //   }, this.validateForm);
       
     }
 
     render() {
+        const {isError, error, message} = this.state;
         var countries=[
+            "choose....",
             "India", 
             "Indonesia", 
             "Germany", 
@@ -121,6 +139,10 @@ class GuestForm extends Component {
         ]
         return (
             <div >
+                <p className='text-danger text-center  text-bold'>
+                    {/* show error here */}
+                    {isError? error: message}
+                </p>
                  <form>
                     <div className='row text-left'>
                         <div className='col-6'>
@@ -129,20 +151,20 @@ class GuestForm extends Component {
                                 <input type="text" className="form-control" 
                                 id="firstname" placeholder="first name"
                                 name='firstname'
-                                defaultValue={'helo'}
                                 value={this.state.firstname}
-                                onChange={()=>this.handleUserInput}
-                                srequired/>
+                                // onKeyDown={(e)=> console.log(e)}
+                                onChange={(e)=>this.handleUserInput(e)}
+                                required/>
                             </div>
                         </div>
                         <div className='col-6'>
                             <div className="mb-3">
                                 <label htmlFor="lastname" className="form-label">Last Name</label>
                                 <input type="text" className="form-control"
-                                id="lastname" placeholder="last name"
+                                id="lastname" placeholder="Last Name"
                                 name='lastname'
                                 value={this.state.lastname}
-                                onChange={()=>this.handleUserInput}
+                                onChange={(e)=>this.handleUserInput(e)}
                                 required/>
                             </div>
                         </div>
@@ -153,8 +175,8 @@ class GuestForm extends Component {
                                 id="email" placeholder="name@example.com"
                                 name='email'
                                 value={this.state.email}
-                                onChange={()=>this.handleUserInput}
-                                 required/>
+                                onChange={(e)=>this.handleUserInput(e)}
+                                required/>
                             </div>
                         </div>
                         
@@ -165,17 +187,18 @@ class GuestForm extends Component {
                                 id="issued-id" placeholder="issued-id" 
                                 name='issuedId'
                                 value={this.state.issuedId}
-                                onChange={()=>this.handleUserInput}
-                                required/>
+                                onChange={(e)=>this.handleUserInput(e)}
+                                // required
+                                />
                             </div>
                         </div>
                         <div className='col-6'>
                             <div className="mb-3">
                                 <label htmlFor="dateofarrival" className="form-label">Date of Arrival<span className='text-danger'></span>* </label>
                                 <input type="date" className="form-control" 
-                                name='dateOfArrival'
+                                name='arrivalDate'
                                 value={this.state.arrivalDate}
-                                onChange={()=>this.handleUserInput}
+                                onChange={(e)=>this.handleUserInput(e)}
                                 id="dateofarrival" placeholder="dateofarrival" required/>
                             </div>
                         </div>
@@ -185,7 +208,7 @@ class GuestForm extends Component {
                                 <input type="date" className="form-control" 
                                     name='departureDate'
                                     value={this.state.departureDate}
-                                    onChange={()=>this.handleUserInput}
+                                    onChange={(e)=>this.handleUserInput(e)}
                                     id="departureDate" placeholder="Departure Date" required/>
                             </div>
                         </div>
@@ -195,7 +218,7 @@ class GuestForm extends Component {
                                 <select id="country" className="form-select" 
                                 name='country'
                                 value={this.state.country}
-                                onChange={()=>this.handleUserInput}
+                                onChange={(e)=>this.handleUserInput(e)}
                                 // defaultValue="Indonesia"
                                 required>
                                     {countries.map((key, i)=>(
@@ -210,7 +233,7 @@ class GuestForm extends Component {
                                 <input type="number" className="form-control" 
                                 name='numOfPerson'
                                 value={this.state.numOfPerson}
-                                onChange={()=>this.handleUserInput}
+                                onChange={(e)=>this.handleUserInput(e)}
                                 id="person" placeholder="Number of Persons" required/>
                             </div>
                         </div>
@@ -221,7 +244,7 @@ class GuestForm extends Component {
                                 name='specialRequest'
                                 placeholder='Enter your special request'
                                 value={this.state.specialRequest}
-                                onChange={()=>this.handleUserInput}
+                                onChange={(e)=>this.handleUserInput(e)}
                                 rows="3" required></textarea>
                             </div>
                         </div>
@@ -229,18 +252,18 @@ class GuestForm extends Component {
                             <label className="form-label">Payment Method</label>
                             <div className="form-check">
                                 <input className="form-check-input" type="radio" name="paymentMethod" 
-                                    value={this.state.paymentMethod}
-                                    onChange={()=>this.handleUserInput}
-                                    id="credit" required checked/>
+                                    value={'Credit'}
+                                    onChange={(e)=>this.handleUserInput(e)}
+                                    id="credit" required/>
                                 <label className="form-check-label" htmlFor="credit">
                                     Credit
                                 </label>
                             </div>
                             <div className="form-check">
                                 <input className="form-check-input" type="radio" name="paymentMethod" 
-                                    value={this.state.paymentMethod}
-                                    onChange={()=>this.handleUserInput}
-                                    id="debit" required checked/>
+                                    value={'Debit'}
+                                    onChange={(e)=>this.handleUserInput(e)}
+                                    id="debit" required />
                                 <label className="form-check-label" htmlFor="debit">
                                     Debit
                                 </label>
@@ -250,7 +273,9 @@ class GuestForm extends Component {
                     <div className='row text-left'>
                         <div className='col-4'>
                             <button type="submit" className="btn btn-primary btn-lg"
-                            onSubmit={()=>this.getReservation}>Submit</button>
+                            onClick={this.getReservation}
+                            // onSubmit={(e)=>this.getReservation(e)}
+                            >Submit</button>
                         </div>                            
                         <div className='col-4'>
                             <Link className="btn btn-danger btn-lg"  to="/">

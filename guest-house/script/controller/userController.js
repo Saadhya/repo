@@ -12,7 +12,6 @@ function create(req,res,next){
   user.save().then((data)=>{
     res.send(data)
   })
-//   let empMobile = req.body.empMobile;
 }
 
 function view(req,res,next){
